@@ -1,0 +1,46 @@
+def problem_1():
+    multiples = []
+    for x in range(1000):
+        if x % 5 == 0 or x % 3 == 0:
+            multiples.append(x)
+    sum = 0
+    for x in multiples:
+        sum += x
+    return sum
+
+
+def problem_2():
+    fib_array = [1, 2]
+    while True:
+        next = fib_array[len(fib_array) - 1] + fib_array[len(fib_array) - 2]
+        if next > 4000000:
+            break
+        fib_array.append(next)
+    sum = 0
+    for x in fib_array:
+        if x % 2 == 0:
+            sum += x
+    return sum
+
+
+def sieve_of_eratosthenes(n):
+    lst = []
+    a = list(range(n + 1))
+    a[1] = 0
+    i = 2
+    while i <= n:
+        if a[i] != 0:
+            lst.append(a[i])
+            for j in range(i, n + 1, i):
+                a[j] = 0
+        i += 1
+    return lst
+
+
+def problem_3():
+    lst = sieve_of_eratosthenes(600851475143)
+    lst.sort()
+    return lst.pop()
+
+
+print(problem_3())
