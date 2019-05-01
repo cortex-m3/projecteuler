@@ -1,3 +1,6 @@
+import time
+
+
 def problem_1():
     multiples = []
     for x in range(1000):
@@ -22,7 +25,6 @@ def problem_2():
             sum += x
     return sum
 
-
 def sieve_of_eratosthenes(n):
     lst = []
     a = list(range(n + 1))
@@ -37,10 +39,52 @@ def sieve_of_eratosthenes(n):
     return lst
 
 
+def find_next_prime(a, b, primes):  # find first prime in range from a to b, primes is all previous primes founded
+    if a % 2 == 0:  # ensure that our start is odd
+        a += 1
+
+    for x in range(a, b, 2):  # work only with odd numbers to lower number of numbers to compute
+        for m in primes:
+            if x % m == 0:
+                break
+            else:
+                if m == primes[len(primes) - 1]:
+                    return x
+                continue
+    return 0
+
+
+def find_factors(n):
+    factors = []
+    primes = [2]  # first prime is 2
+    rest = n
+    while True:
+        a = primes[len(primes) - 1]  # get last prime, because we have not tried only last one
+        if rest % a == 0:
+            factors.append(a)
+        while rest % a == 0:
+            rest /= a  # for 2*2*2*5 = 40 kind of numbers
+
+        while True:
+            next_prime = find_next_prime(a, a + 1000, primes)  # check is there a prime in window
+            if next_prime != 0:
+                primes.append(next_prime)
+                break
+            else:
+                a += 1000
+        if rest == next_prime:  # if next found prime is equal to number which we got after dividing, then it is the last
+            factors.append(next_prime)
+            break
+    return factors
+
 def problem_3():
-    lst = sieve_of_eratosthenes(600851475143)
-    lst.sort()
+    lst = find_factors(600851475143)
+    for m in lst:
+        print(m)
     return lst.pop()
 
 
-print(problem_3())
+start_time = time.time()
+print("result: " + str(problem_3()))
+elapsed_time = time.time() - start_time
+print("elapsed time " + str(elapsed_time))
