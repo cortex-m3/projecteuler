@@ -84,7 +84,107 @@ def problem_3():
     return lst.pop()
 
 
+def create_palindrome_smaller_than(n):
+    first_part = int(n / 1000)
+    central_part = 9
+    three_digit = False
+    if first_part > 100:
+        first_part -= 1
+        three_digit = True
+    elif first_part <= 100 and first_part >= 10:
+        central_part = int((n - first_part * 1000) / 100)
+        three_digit = False
+        if central_part > 0:
+            central_part -= 1
+        else:
+            central_part = 9
+            first_part -= 1
+    else:
+        return 0
+
+    buff = first_part
+    digits = []
+
+    if three_digit:
+        digits.append(int(buff / 100))
+        buff -= int(buff / 100) * 100
+        digits.append(int(buff / 10))
+        buff -= int(buff / 10) * 10
+        digits.append(buff)
+        palindrome = first_part * 1000 + digits.pop() * 100 + digits.pop() * 10 + digits.pop()
+    else:
+        digits.append(int(buff / 10))
+        buff -= int(buff / 10) * 10
+        digits.append(buff)
+        palindrome = first_part * 1000 + central_part * 100 + digits.pop() * 10 + digits.pop()
+    return palindrome
+
+
+def find_all_dividers(n):
+    dividers = []
+    primes = [2]  # first prime is 2
+    rest = n
+    while True:
+        a = primes[len(primes) - 1]  # get last prime, because we have not tried only last one
+        while rest % a == 0:
+            rest /= a
+            dividers.append(a)
+
+        while True:
+            b = a + 1000
+            if b > n:
+                b = n
+            next_prime = find_next_prime(a, b, primes)  # check is there a prime in window
+            if next_prime >= 1000:
+                dividers.clear()
+                return dividers
+            if next_prime != 0:
+                primes.append(next_prime)
+                break
+            else:
+                a += 1000
+        if rest == next_prime:  # if next found prime is equal to number which we got after dividing, then it is the last
+            dividers.append(next_prime)
+            break
+
+    return dividers
+
+
+def problem_4():
+    palindrome = 999999
+    first_multiplier = 1
+    second_multiplier = 1
+
+    while True:
+        palindrome = create_palindrome_smaller_than(palindrome)
+        if palindrome == 0:
+            break
+        dividers = find_all_dividers(palindrome)
+        for x in reversed(dividers):
+            if first_multiplier * x < 1000:
+                first_multiplier *= x
+                dividers.remove(x)
+            else:
+                continue
+
+        if len(dividers) == 0 or first_multiplier >= 1000:
+            first_multiplier = 1
+            continue
+        else:
+            while second_multiplier < 1000:
+                if len(dividers) > 0:
+                    second_multiplier *= dividers.pop()
+                else:
+                    break
+        if len(dividers) == 0 and first_multiplier < 1000 and second_multiplier < 1000:
+            break
+        else:
+            first_multiplier = 1
+            second_multiplier = 1
+
+    return palindrome
+
 start_time = time.time()
-print("result: " + str(problem_3()))
+print("result: " + str(problem_4()))
 elapsed_time = time.time() - start_time
 print("elapsed time " + str(elapsed_time))
