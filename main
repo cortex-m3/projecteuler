@@ -43,7 +43,7 @@ def find_next_prime(a, b, primes):  # find first prime in range from a to b, pri
     if a % 2 == 0:  # ensure that our start is odd
         a += 1
 
-    for x in range(a, b, 2):  # work only with odd numbers to lower number of numbers to compute
+    for x in range(a, b + 1):  # work only with odd numbers to lower number of numbers to compute
         for m in primes:
             if x % m == 0:
                 break
@@ -129,6 +129,8 @@ def find_all_dividers(n):
         while rest % a == 0:
             rest /= a
             dividers.append(a)
+        if rest == 1:
+            return dividers
 
         while True:
             b = a + 1000
@@ -184,7 +186,47 @@ def problem_4():
 
     return palindrome
 
+
+def problem_5():
+    n = 56
+    n_dividers = [[] for i in range(n + 1)]
+
+    for m in range(2, n + 1):
+        n_dividers[m] = find_all_dividers(m).copy()
+
+    n_dividers.sort()
+    buff = []
+    result_list = []
+    for m in n_dividers:
+        if len(m) == 1:
+            result_list.append(m[0])
+        elif len(m) > 1:
+            all_equal = True
+            for z in m:
+                if z != m[0]:
+                    all_equal = False
+                    break
+            if all_equal:
+                buff = m
+
+        if len(buff) > 0:
+            count = result_list.count(buff[0])
+            if count > 0:
+                for m in range(0, count):
+                    result_list.remove(buff[0])
+
+            result_list.extend(buff)
+            buff = []
+
+    result = 1
+    for m in result_list:
+        result *= m
+
+    for n in range(1, n + 1):
+        print(str(n) + " = " + str(result / n))
+    return result
+
 start_time = time.time()
-print("result: " + str(problem_4()))
+print("result: " + str(problem_5()))
 elapsed_time = time.time() - start_time
 print("elapsed time " + str(elapsed_time))
