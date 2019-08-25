@@ -226,7 +226,24 @@ def problem_5():
         print(str(n) + " = " + str(result / n))
     return result
 
+
+def problem_6():
+    sum_of_squares = 0
+    for m in range(1, 101):
+        sum_of_squares += m * m
+
+    summ = sum(range(1, 101))
+    square_of_sum = summ * summ
+
+    return square_of_sum - sum_of_squares  # may be this is too straightforward solution?
+
+
+def problem_7():
+    lst = sieve_of_eratosthenes(1000000)
+
+    return lst[10001]
+
 start_time = time.time()
-print("result: " + str(problem_5()))
+print("result: " + str(problem_7()))
 elapsed_time = time.time() - start_time
 print("elapsed time " + str(elapsed_time))
